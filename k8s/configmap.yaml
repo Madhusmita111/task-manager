@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  SQS_QUEUE_URL: "https://sqs.ap-south-1.amazonaws.com/933428634281/order-queue"
+  AWS_REGION: "ap-south-1"
