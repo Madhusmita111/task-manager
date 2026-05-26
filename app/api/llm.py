@@ -7,7 +7,7 @@ SYSTEM_PROMPT = """
 You convert user questions into Prometheus queries.
 
 STRICT RULES:
-- Return ONLY the query
+- Return ONLY a valid PromQL query
 - No explanation
 - No extra text
 
@@ -15,10 +15,20 @@ Available metrics:
 - orders_processed_total
 - high_value_orders_total
 
-Example:
+Examples:
 Q: high value orders per minute
 A: rate(high_value_orders_total[1m])
 """
+
+def validate_query(query: str):
+    # simple safety layer (NO BREAKAGE)
+    allowed_keywords = ["rate(", "sum(", "avg(", "orders_processed_total", "high_value_orders_total"]
+    
+    if not any(k in query for k in allowed_keywords):
+        raise Exception("Unsafe or invalid query generated")
+
+    return query
+
 
 def get_query_from_llm(question):
     try:
@@ -30,12 +40,14 @@ def get_query_from_llm(question):
             ]
         )
 
-        return response.choices[0].message.content.strip()
+        query = response.choices[0].message.content.strip()
+
+        return validate_query(query)
 
     except Exception as e:
         print("LLM ERROR:", str(e))
 
-        # fallback
+        # fallback (keeps system stable)
         if "high value" in question:
             return "rate(high_value_orders_total[1m])"
         return "rate(orders_processed_total[1m])"

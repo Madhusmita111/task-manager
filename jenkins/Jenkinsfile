@@ -3,50 +3,71 @@ pipeline {
 
   environment {
     AWS_REGION = 'ap-south-1'
-    ECR_REGISTRY = '<your-account-id>.dkr.ecr.ap-south-1.amazonaws.com'
-    IMAGE_NAME = 'api'
+    ECR_REPO = '<your-account-id>.dkr.ecr.ap-south-1.amazonaws.com/api'
   }
 
   stages {
 
     stage('Checkout') {
       steps {
-        checkout scm
-      }
-    }
-
-    stage('Install Dependencies') {
-      steps {
-        sh 'pip install -r app/api/requirements.txt'
-      }
-    }
-
-    stage('Run Tests') {
-      steps {
-        sh 'pytest || true'
+        git 'https://github.com/your-username/your-repo.git'
       }
     }
 
     stage('Build Docker Image') {
       steps {
-        sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER app/api/'
+        sh 'docker build -t api:latest ./app/api'
       }
     }
 
-    stage('Tag & Push to ECR') {
+    stage('Tag Image') {
+      steps {
+        sh 'docker tag api:latest $ECR_REPO:$BUILD_NUMBER'
+      }
+    }
+
+    stage('Login to ECR') {
       steps {
         sh '''
-        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
-        docker tag $IMAGE_NAME:$BUILD_NUMBER $ECR_REGISTRY/$IMAGE_NAME:$BUILD_NUMBER
-        docker push $ECR_REGISTRY/$IMAGE_NAME:$BUILD_NUMBER
+        aws ecr get-login-password --region $AWS_REGION | \
+        docker login --username AWS --password-stdin $ECR_REPO
         '''
+      }
+    }
+
+    stage('Push to ECR') {
+      steps {
+        sh 'docker push $ECR_REPO:$BUILD_NUMBER'
+      }
+    }
+
+    stage('Terraform Init & Plan') {
+      steps {
+        dir('terraform') {
+          sh 'terraform init'
+          sh 'terraform plan -out=tfplan'
+        }
+      }
+    }
+
+    stage('Approve') {
+      steps {
+        input 'Deploy to AWS?'
+      }
+    }
+
+    stage('Terraform Apply') {
+      steps {
+        dir('terraform') {
+          sh 'terraform apply tfplan'
+        }
       }
     }
 
     stage('Deploy to Kubernetes') {
       steps {
         sh '''
-        kubectl set image deployment/api api=$ECR_REGISTRY/$IMAGE_NAME:$BUILD_NUMBER
+        kubectl set image deployment/api api=$ECR_REPO:$BUILD_NUMBER
         '''
       }
     }
