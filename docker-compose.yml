@@ -1,18 +1,62 @@
-version: "3"
+version: "3.8"
 
 services:
   producer:
-    build: ./app/producer
+    build:
+      context: ./app/producer
+      dockerfile: Dockerfile
     container_name: producer
     environment:
       - SQS_QUEUE_URL=${SQS_QUEUE_URL}
       - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     restart: always
 
   processor:
-    build: ./app/processor
+    build:
+      context: ./app/processor
+      dockerfile: Dockerfile
     container_name: processor
+    ports:
+      - "8000:8000"
     environment:
       - SQS_QUEUE_URL=${SQS_QUEUE_URL}
       - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     restart: always
+
+  api:
+    build:
+      context: ./app/api
+      dockerfile: Dockerfile
+    container_name: api
+    ports:
+      - "8080:8080"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - PROMETHEUS_URL=http://prometheus:9090
+    restart: always
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+    restart: always
+    depends_on:
+      - prometheus
