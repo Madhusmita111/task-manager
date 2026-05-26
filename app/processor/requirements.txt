@@ -1,2 +1,2 @@
 boto3
-python-dotenv
+prometheus_client

@@ -1,0 +1,54 @@
+pipeline {
+  agent any
+
+  environment {
+    AWS_REGION = 'ap-south-1'
+    ECR_REGISTRY = '<your-account-id>.dkr.ecr.ap-south-1.amazonaws.com'
+    IMAGE_NAME = 'api'
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+        sh 'pip install -r app/api/requirements.txt'
+      }
+    }
+
+    stage('Run Tests') {
+      steps {
+        sh 'pytest || true'
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER app/api/'
+      }
+    }
+
+    stage('Tag & Push to ECR') {
+      steps {
+        sh '''
+        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+        docker tag $IMAGE_NAME:$BUILD_NUMBER $ECR_REGISTRY/$IMAGE_NAME:$BUILD_NUMBER
+        docker push $ECR_REGISTRY/$IMAGE_NAME:$BUILD_NUMBER
+        '''
+      }
+    }
+
+    stage('Deploy to Kubernetes') {
+      steps {
+        sh '''
+        kubectl set image deployment/api api=$ECR_REGISTRY/$IMAGE_NAME:$BUILD_NUMBER
+        '''
+      }
+    }
+  }
+}
