@@ -24,11 +24,22 @@ jobs:
         run: |
           aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 933428634281.dkr.ecr.ap-south-1.amazonaws.com
 
-      - name: Build API Image
+      - name: Build & Push All Images
         run: |
+          # API
           docker build -t task-manager-api ./app/api
           docker tag task-manager-api:latest 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-api:latest
           docker push 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-api:latest
+
+          # PRODUCER
+          docker build -t task-manager-producer ./app/producer
+          docker tag task-manager-producer:latest 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-producer:latest
+          docker push 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-producer:latest
+
+          # PROCESSOR
+          docker build -t task-manager-processor ./app/processor
+          docker tag task-manager-processor:latest 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-processor:latest
+          docker push 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-processor:latest
 
       - name: Update kubeconfig
         run: |
