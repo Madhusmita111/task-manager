@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   producer:
+    platform: linux/amd64
     build:
       context: ./app/producer
       dockerfile: Dockerfile
@@ -14,6 +15,7 @@ services:
     restart: always
 
   processor:
+    platform: linux/amd64
     build:
       context: ./app/processor
       dockerfile: Dockerfile
@@ -28,6 +30,7 @@ services:
     restart: always
 
   api:
+    platform: linux/amd64
     build:
       context: ./app/api
       dockerfile: Dockerfile
@@ -51,12 +54,12 @@ services:
     restart: always
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:10.4.2
     container_name: grafana
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     restart: always
     depends_on:
       - prometheus

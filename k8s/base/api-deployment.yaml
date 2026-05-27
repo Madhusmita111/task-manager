@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: api
-          image: api:v1
-          imagePullPolicy: IfNotPresent
+          image: task-manager-api
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
           resources:

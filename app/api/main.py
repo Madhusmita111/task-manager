@@ -128,7 +128,7 @@ def extract_value(prom_result: dict) -> str:
 # API Endpoints
 # ------------------------------------------------------------------------------
 @app.post("/ask")
-async def ask(data: QuestionRequest):
+def ask(data: QuestionRequest):
     question = data.question
     ask_requests.inc()
     start_time = time.time()
