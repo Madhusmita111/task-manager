@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: producer
-          image: task-manager-producer
-          imagePullPolicy: Never
+          image: 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-producer:latest
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: app-config

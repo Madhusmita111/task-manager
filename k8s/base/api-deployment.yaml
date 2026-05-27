@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: api
-          image: task-manager-api
-          imagePullPolicy: Never
+          image: 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           resources:

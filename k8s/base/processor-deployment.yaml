@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: processor
-          image: task-manager-processor
-          imagePullPolicy: Never
+          image: 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-processor:latest
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: app-config

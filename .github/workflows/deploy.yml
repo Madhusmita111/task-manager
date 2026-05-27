@@ -1,0 +1,39 @@
+name: Deploy to EKS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 933428634281.dkr.ecr.ap-south-1.amazonaws.com
+
+      - name: Build API Image
+        run: |
+          docker build -t task-manager-api ./app/api
+          docker tag task-manager-api:latest 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-api:latest
+          docker push 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-api:latest
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --region ap-south-1 --name ai-devops-cluster
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/ --recursive
