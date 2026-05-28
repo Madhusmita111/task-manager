@@ -48,8 +48,8 @@ graph TD;
 
 ##  Key Engineering Features (Production Grade)
 
-- ** AI Translation Layer:** Uses Groq to dynamically transpile natural language into precise PromQL queries.
-- ** Bulletproof Resiliency:** 
+- **AI Translation Layer:** Uses Groq to dynamically transpile natural language into precise PromQL queries.
+- **Bulletproof Resiliency:** 
   - **LLM Fallback:** If the LLM API rate-limits or fails, a local regex-based engine instantly takes over with zero downtime.
   - **Database Graceful Degradation:** If Prometheus is unreachable, the API intercepts the `ConnectionError` and returns a safe "System Offline" JSON response instead of a 500 server crash.
 - **⚡ In-Memory Compiler Cache:** Redundant natural language queries bypass the LLM entirely, pulling the translated PromQL from RAM to drastically reduce latency and API costs.
@@ -73,7 +73,7 @@ graph TD;
 
 ---
 
-## 🚦 How to Run Locally (Docker Compose)
+##  How to Run Locally (Docker Compose)
 
 You can run the entire distributed system on your local machine with a single command. 
 
