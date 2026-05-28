@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🧠 NL2PromQL: AI-Powered Observability Engine</h1>
+  <h1> NL2PromQL: AI-Powered Observability Engine</h1>
   <p><b>"Google for System Metrics, but smarter."</b></p>
   
   [![Python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge&logo=python)](https://python.org)
@@ -12,7 +12,7 @@
 
 ---
 
-## 🎯 The Problem it Solves (Real Use Case)
+##  The Problem it Solves (Real Use Case)
 Normally, DevOps engineers and SREs have to write complex, error-prone PromQL queries to fetch live system data during high-stress incidents. 
 
 **This system lets them just ask in English.** 
@@ -21,7 +21,7 @@ By wrapping a high-performance NLP-to-PromQL transpilation engine (powered by LL
 
 ---
 
-## 🏗️ End-to-End Architecture
+##  End-to-End Architecture
 
 This is not a simple REST API. It is a full-stack, event-driven microservice ecosystem designed to production standards.
 
@@ -46,10 +46,10 @@ graph TD;
 
 ---
 
-## 🚀 Key Engineering Features (Production Grade)
+##  Key Engineering Features (Production Grade)
 
-- **🧠 AI Translation Layer:** Uses Groq to dynamically transpile natural language into precise PromQL queries.
-- **🛡️ Bulletproof Resiliency:** 
+- ** AI Translation Layer:** Uses Groq to dynamically transpile natural language into precise PromQL queries.
+- ** Bulletproof Resiliency:** 
   - **LLM Fallback:** If the LLM API rate-limits or fails, a local regex-based engine instantly takes over with zero downtime.
   - **Database Graceful Degradation:** If Prometheus is unreachable, the API intercepts the `ConnectionError` and returns a safe "System Offline" JSON response instead of a 500 server crash.
 - **⚡ In-Memory Compiler Cache:** Redundant natural language queries bypass the LLM entirely, pulling the translated PromQL from RAM to drastically reduce latency and API costs.
@@ -59,7 +59,7 @@ graph TD;
 
 ---
 
-## 🛠️ The Tech Stack
+##  The Tech Stack
 
 | Technology | Role |
 |------------|------|
@@ -106,7 +106,7 @@ You can run the entire distributed system on your local machine with a single co
 
 ---
 
-## ☁️ Cloud Deployment (Kubernetes + Terraform)
+##  Cloud Deployment (Kubernetes + Terraform)
 
 To deploy to a live cloud environment:
 
@@ -122,6 +122,4 @@ To deploy to a live cloud environment:
    ```
 
 ---
-<div align="center">
-  <i>Built to demonstrate senior-level DevOps, SRE, and Backend Engineering principles.</i>
-</div>
+
