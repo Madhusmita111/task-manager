@@ -1,5 +1,5 @@
 <div align="center">
-  <h1> NL2PromQL: AI-Powered Observability Engine</h1>
+  <h1> AI-Powered Observability Engine</h1>
   <p><b>"Google for System Metrics, but smarter."</b></p>
   
   [![Python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge&logo=python)](https://python.org)
