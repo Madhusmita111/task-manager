@@ -13,6 +13,7 @@ spec:
       labels:
         app: producer
     spec:
+      serviceAccountName: task-manager-sa   # 🔥 ADD THIS
       containers:
         - name: producer
           image: 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-producer:latest
@@ -20,5 +21,3 @@ spec:
           envFrom:
             - configMapRef:
                 name: app-config
-            - secretRef:
-                name: aws-secret

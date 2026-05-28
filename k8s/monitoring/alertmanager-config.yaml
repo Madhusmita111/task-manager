@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: default
+
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+
+    route:
+      receiver: "telegram"
+
+    receivers:
+      - name: "telegram"
+        telegram_configs:
+          - bot_token: "8717021761:AAHyOQ3xRaidoA5Y123S8Wm8sY82LUeyY1k"
+            chat_id: 1134555830
+            message: |
+              Alert: {{ .CommonLabels.alertname }}
+              Severity: {{ .CommonLabels.severity }}
+              Description: {{ .CommonAnnotations.description }}

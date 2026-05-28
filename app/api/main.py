@@ -53,6 +53,7 @@ ask_requests = Counter("ask_requests_total", "Total /ask requests received")
 ask_errors = Counter("ask_errors_total", "Total failed /ask requests")
 cache_hits = Counter("cache_hits_total", "Total PromQL cache hits")
 cache_misses = Counter("cache_misses_total", "Total PromQL cache misses")
+fallback_counter = Counter("fallback_total", "Fallback usage")
 ask_latency = Histogram(
     "ask_latency_seconds", 
     "Latency of /ask endpoint execution in seconds",
@@ -154,6 +155,7 @@ def ask(data: QuestionRequest):
         )
 
     try:
+        logging.info("Processing query...")
         # 3. Cache Check (PromQL translation cache)
         cached = False
         if clean_question in translation_cache:
@@ -210,8 +212,10 @@ def ask(data: QuestionRequest):
 
     except ConnectionError as e:
         ask_errors.inc()
+        fallback_counter.inc()
         # High resiliency fallback: return a safe response indicating server disruption
         # but displaying the translated query they would have executed.
+        logging.error("Error occurred...")
         logger.error(f"Fallback initiated due to Prometheus connection failure: {str(e)}")
         return {
             "status": "partial_success",

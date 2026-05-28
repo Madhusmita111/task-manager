@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -20,7 +21,17 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: /etc/prometheus
+
+
+            - name: alert-rules
+              mountPath: /etc/prometheus/rules
+
       volumes:
         - name: config-volume
           configMap:
             name: prometheus-config
+
+
+        - name: alert-rules
+          configMap:
+            name: prometheus-alerts

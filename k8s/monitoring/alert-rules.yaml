@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alerts
+  namespace: default
+data:
+  alert.rules.yml: |
+    groups:
+      - name: ai-observability-alerts
+        rules:
+
+          - alert: HighErrorRate
+            expr: sum(ask_errors_total) > 0
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "High error rate detected"
+              description: "AI API is returning errors"
+
+          - alert: NoTraffic
+            expr: rate(ask_requests_total[2m]) == 0
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "No traffic detected"
+              description: "No incoming requests to API"
+
+          - alert: HighLatency
+            expr: histogram_quantile(0.95, sum(rate(ask_latency_seconds_bucket[2m])) by (le)) > 0.2
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "High latency detected"
+              description: "p95 latency is above 200ms"

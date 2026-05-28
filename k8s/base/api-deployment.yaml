@@ -15,6 +15,7 @@ spec:
       labels:
         app: api
     spec:
+      serviceAccountName: task-manager-sa   # 🔥 ADD THIS
       containers:
         - name: api
           image: 933428634281.dkr.ecr.ap-south-1.amazonaws.com/task-manager-api:latest
