@@ -9,6 +9,7 @@ AWS_REGION = os.getenv("AWS_REGION", "ap-south-1")
 AWS_ENDPOINT_URL = os.getenv("AWS_ENDPOINT_URL")  # Support local SQS emulator if specified
 
 # Prometheus Metrics Definitions
+
 orders_processed = Counter('orders_processed_total', 'Total processed orders')
 high_value_orders = Counter('high_value_orders_total', 'Total processed high-value orders (> 5000)')
 processing_errors = Counter('processing_errors_total', 'Total errors encountered during SQS consumption/processing')
